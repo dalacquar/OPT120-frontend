@@ -2,8 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:frontend/user_registration_screen.dart';
 import 'package:frontend/activity_registration_screen.dart';
 import 'package:frontend/delivery_registration_screen.dart';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+class MainScreen extends StatefulWidget {
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
 
-class MainScreen extends StatelessWidget {
+class _MainScreenState extends State<MainScreen> {
+  List<Map<String, dynamic>> _users = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUsers();
+  }
+
+  Future<void> _fetchUsers() async {
+    final response = await http.get(Uri.parse('http://127.0.0.1:3000/user'));
+    if (response.statusCode == 200) {
+      final List<dynamic> responseData = jsonDecode(response.body);
+      setState(() {
+        _users = responseData.cast<Map<String, dynamic>>();
+      });
+    } else {
+      throw Exception('Failed to load users');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,24 +38,19 @@ class MainScreen extends StatelessWidget {
         title: Text('Tela Principal'),
       ),
       body: Container(
-        color: Colors.grey[900], // Fundo cinza escuro mais escuro
+        color: Colors.grey[900],
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Linha dividindo o título da tela e o menu
             Container(
               height: 1,
               color: Colors.white,
             ),
-            // Menu de navegação
             Container(
-              padding:
-                  EdgeInsets.all(15), // Padding de 15 pixels em todos os lados
+              padding: EdgeInsets.all(15),
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(
-                      color: Colors.white,
-                      width: 1.0), // Bordar na parte inferior
+                  bottom: BorderSide(color: Colors.white, width: 1.0),
                 ),
               ),
               child: Row(
@@ -37,35 +59,29 @@ class MainScreen extends StatelessWidget {
                   SizedBox(width: 10),
                   ElevatedButton(
                     onPressed: () {
-                      // Navegar para a tela de cadastro de usuário
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => UserRegistrationScreen()),
+                        MaterialPageRoute(builder: (context) => UserRegistrationScreen()),
                       );
                     },
                     child: Text('Cadastro de Usuário'),
                   ),
-                  SizedBox(width: 10), // Espaçamento entre os botões
+                  SizedBox(width: 10),
                   ElevatedButton(
                     onPressed: () {
-                      // Navegar para a tela de cadastro de atividade
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => ActivityRegistrationScreen()),
+                        MaterialPageRoute(builder: (context) => ActivityRegistrationScreen()),
                       );
                     },
                     child: Text('Cadastro de Atividade'),
                   ),
-                  SizedBox(width: 10), // Espaçamento entre os botões
+                  SizedBox(width: 10),
                   ElevatedButton(
                     onPressed: () {
-                      // Navegar para a tela de cadastro de entrega
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => DeliveryRegistrationScreen()),
+                        MaterialPageRoute(builder: (context) => DeliveryRegistrationScreen()),
                       );
                     },
                     child: Text('Cadastro de Entrega'),
@@ -73,7 +89,18 @@ class MainScreen extends StatelessWidget {
                 ],
               ),
             ),
-            // Outros widgets do corpo aqui
+            Expanded(
+              child: ListView.builder(
+                itemCount: _users.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(_users[index]['nome']),
+                    subtitle: Text(_users[index]['email']),
+                    trailing: Text(_users[index]['createdAt']),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
