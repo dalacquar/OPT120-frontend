@@ -64,9 +64,7 @@ class UserRegistrationScreen extends StatelessWidget {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
-                  // Chame o método createUser do UserService quando o botão de registro for pressionado
                   await userService.createUser(name, email, password);
-                  // Após o cadastro, exibe o aviso na tela
                   _showDialog(context, 'Usuário criado com sucesso');
                 },
                 child: Text('Registrar'),

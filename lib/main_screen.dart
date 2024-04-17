@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/activity_list_screen.dart';
 import 'package:frontend/user_registration_screen.dart';
 import 'package:frontend/activity_registration_screen.dart';
 import 'package:frontend/delivery_registration_screen.dart';
@@ -61,32 +62,10 @@ class _MainScreenState extends State<MainScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => UserLoginScreen()),
+                            builder: (context) => ActivityListScreen()),
                       );
                     },
-                    child: Text('Login'),
-                  ),
-                  SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => UserRegistrationScreen()),
-                      );
-                    },
-                    child: Text('Cadastro de Usuário'),
-                  ),
-                  SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ActivityRegistrationScreen()),
-                      );
-                    },
-                    child: Text('Cadastro de Atividade'),
+                    child: Text('Listagem de Atividade'),
                   ),
                   SizedBox(width: 10),
                   ElevatedButton(
