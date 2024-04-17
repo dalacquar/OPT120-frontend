@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/auth_login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'auth_login_screen.dart'; // Importe a tela de login
-import 'main_screen.dart'; // Importe a tela principal
+import 'auth_login_screen.dart';
+import 'main_screen.dart';
 
 void main() async {
-  WidgetsFlutterBinding
-      .ensureInitialized(); // Garanta que os widgets estejam inicializados
+  WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 

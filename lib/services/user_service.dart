@@ -1,6 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'config.dart';
-import 'dart:convert'; // Importe a biblioteca para lidar com JSON
+import 'dart:convert';
 
 class UserService {
   Future<void> createUser(String name, String email, String password) async {
@@ -16,7 +16,7 @@ class UserService {
           headers: <String, String>{
             'Content-Type':
                 'application/json; charset=UTF-8', // Defina o cabeçalho Content-Type
-          }, // Use a base URL da classe Config
+          },
           body: jsonEncode(body));
 
       if (response.statusCode == 201) {

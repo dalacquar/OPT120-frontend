@@ -30,10 +30,9 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBar(
         title: Text('Tela Principal'),
         actions: [
-          // Botão "Sair"
           IconButton(
             icon: Icon(Icons.exit_to_app),
-            onPressed: _logout, // Chama o método de logout ao pressionar
+            onPressed: _logout,
           ),
         ],
       ),

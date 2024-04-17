@@ -46,21 +46,16 @@ class UserLoginScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  // Chama a função de login e espera pela resposta
                   String? loggedIn =
                       await AuthService.authLogin(email, password);
 
                   print(loggedIn);
 
-                  // Verifica se o login foi bem-sucedido
                   if (loggedIn != null) {
-                    _showDialog(context, 'Login realizado com sucesso');
-                    // Navegar para a tela principal (MainScreen)
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            MainScreen(), // Substitua MainScreen pelo nome da sua tela principal
+                        builder: (context) => MainScreen(),
                       ),
                     );
                   } else {
@@ -73,9 +68,7 @@ class UserLoginScreen extends StatelessWidget {
               },
               child: Text('Login'),
             ),
-
             SizedBox(height: 10),
-            // Link para a tela de registro
             TextButton(
               onPressed: () {
                 Navigator.push(

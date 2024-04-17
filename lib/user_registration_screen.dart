@@ -16,7 +16,6 @@ class UserRegistrationScreen extends StatelessWidget {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                // Navegar para a tela de login após o sucesso do cadastro
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
