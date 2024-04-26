@@ -3,14 +3,37 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'config.dart';
 import 'dart:convert';
 
+class Activity {
+  final int id;
+  final String nome;
+  final String descricao;
+  final String date_limit;
+
+  Activity(
+      {required this.id,
+      required this.nome,
+      required this.descricao,
+      required this.date_limit});
+}
+
+class ActivityCreate {
+  final String nome;
+  final String descricao;
+  final String date_limit;
+
+  ActivityCreate(
+      {required this.nome, required this.descricao, required this.date_limit});
+}
+
 class ActivityService {
-  Future<String?> createActivity(String nome, String descricao) async {
+  Future<String?> createActivity(ActivityCreate activityCreate) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = await prefs.getString('token');
 
     var body = {
-      'nome': nome,
-      'descricao': descricao,
+      'nome': activityCreate.nome,
+      'descricao': activityCreate.descricao,
+      'date_limit': activityCreate.date_limit
     };
 
     try {
@@ -34,7 +57,7 @@ class ActivityService {
     }
   }
 
-  Future<List<Map<String, String>>> getActivities() async {
+  Future<List<Activity>> getActivities() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = await prefs.getString('token');
 
@@ -48,12 +71,14 @@ class ActivityService {
 
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
-        List<Map<String, String>> activities = [];
+        List<Activity> activities = [];
         for (var item in data) {
-          activities.add({
-            'nome': item['nome'],
-            'descricao': item['descricao'],
-          });
+          activities.add(Activity(
+              id: item['id'],
+              nome: item['nome'] != null ? item['nome'] : '',
+              descricao: item['descricao'] != null ? item['descricao'] : '',
+              date_limit:
+                  item['date_limit'] != null ? item['date_limit'] : ''));
         }
         return activities;
       } else {
@@ -64,6 +89,32 @@ class ActivityService {
     } catch (e) {
       print('Erro ao obter atividades: $e');
       throw Exception('Failed to load activities');
+    }
+  }
+
+  Future<String?> deleteActivity(int activityId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = await prefs.getString('token');
+
+    try {
+      final response = await http.delete(
+        Uri.parse('${Config.baseUrl}/activity/${activityId}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return ('Atividade deletada com sucesso');
+      } else {
+        print(
+            'Falha ao deletar Atividade: ${response.statusCode} ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Erro ao deletar Atividade: $e');
+      return null;
     }
   }
 }

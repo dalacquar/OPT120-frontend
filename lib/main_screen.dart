@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/activity_list_screen.dart';
+import 'package:frontend/delivery_list_screen.dart';
 import 'package:frontend/user_registration_screen.dart';
 import 'package:frontend/activity_registration_screen.dart';
 import 'package:frontend/delivery_registration_screen.dart';
@@ -72,10 +73,10 @@ class _MainScreenState extends State<MainScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => DeliveryRegistrationScreen()),
+                            builder: (context) => DeliveryListScreen()),
                       );
                     },
-                    child: Text('Cadastro de Entrega'),
+                    child: Text('Listagem de Entregas'),
                   ),
                 ],
               ),

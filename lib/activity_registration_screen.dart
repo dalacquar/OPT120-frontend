@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:frontend/activity_list_screen.dart';
 import 'package:frontend/services/activity_service.dart';
 
-class ActivityRegistrationScreen extends StatelessWidget {
+class ActivityRegistrationScreen extends StatefulWidget {
+  @override
+  _ActivityRegistrationScreenState createState() =>
+      _ActivityRegistrationScreenState();
+}
+
+class _ActivityRegistrationScreenState extends State {
   final ActivityService activityService = ActivityService();
+  late List<Activity> _activities = [];
 
   void _showDialog(BuildContext context, String message) {
     showDialog(
@@ -25,10 +33,12 @@ class ActivityRegistrationScreen extends StatelessWidget {
     );
   }
 
+  TextEditingController _dateLimitController = TextEditingController();
+  TextEditingController _nomeController = TextEditingController();
+  TextEditingController _descricaoController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    String nome = '';
-    String descricao = '';
     return Scaffold(
       appBar: AppBar(
         title: Text('Cadastro de Atividade'),
@@ -41,18 +51,31 @@ class ActivityRegistrationScreen extends StatelessWidget {
             children: [
               TextFormField(
                 decoration: InputDecoration(labelText: 'Nome'),
-                onChanged: (value) => nome = value,
+                onChanged: (value) => setState(() {
+                  _nomeController.text = value;
+                }),
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'Descrição'),
-                onChanged: (value) => descricao = value,
+                onChanged: (value) => setState(() {
+                  _descricaoController.text = value;
+                }),
               ),
+              TextField(
+                  controller: _dateLimitController,
+                  decoration: InputDecoration(labelText: 'Data Limite'),
+                  readOnly: true,
+                  onTap: () => _selectDate(context)),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
+                  var activityAdd = ActivityCreate(
+                      nome: _nomeController.text,
+                      descricao: _descricaoController.text,
+                      date_limit: _dateLimitController.text);
                   try {
                     String? results =
-                        await activityService.createActivity(nome, descricao);
+                        await activityService.createActivity(activityAdd);
                     if (results != null) {
                       _showDialog(context, results);
                       Navigator.pushReplacement(
@@ -75,5 +98,18 @@ class ActivityRegistrationScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _selectDate(context) async {
+    DateTime? _picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2100));
+    if (_picked != null) {
+      setState(() {
+        _dateLimitController.text = _picked.toString().split(" ")[0];
+      });
+    }
   }
 }

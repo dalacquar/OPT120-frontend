@@ -13,22 +13,17 @@ class AuthService {
       final response =
           await http.post(Uri.parse('${Config.baseUrl}/auth/login'),
               headers: <String, String>{
-                'Content-Type':
-                    'application/json; charset=UTF-8',
+                'Content-Type': 'application/json; charset=UTF-8',
               },
               body: jsonEncode(body));
 
       if (response.statusCode == 200) {
-        print('entrou aq');
         final responseData = json.decode(response.body);
-        print(responseData);
         final String token = responseData['token'];
-        print(token);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('token', token);
         prefs.setBool('isLoggedIn', true);
 
-        print("saiu");
         return token;
       } else {
         return null;
