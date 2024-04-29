@@ -88,7 +88,7 @@ class DeliveryRegistrationScreenState
                 items: _activities.map((valueItem) {
                   return DropdownMenuItem(
                     value: valueItem.id,
-                    child: Text(valueItem.nome),
+                    child: Text(valueItem.nome ?? ""),
                   );
                 }).toList(),
               ),

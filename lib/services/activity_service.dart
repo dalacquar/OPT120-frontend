@@ -4,25 +4,22 @@ import 'config.dart';
 import 'dart:convert';
 
 class Activity {
-  final int id;
-  final String nome;
-  final String descricao;
-  final String date_limit;
+  int? id;
+  String? nome;
+  String? descricao;
+  String? date_limit;
 
-  Activity(
-      {required this.id,
-      required this.nome,
-      required this.descricao,
-      required this.date_limit});
+  Activity({this.id, this.nome, this.descricao, this.date_limit});
+
+  // Outros métodos, construtores, etc.
 }
 
 class ActivityCreate {
-  final String nome;
-  final String descricao;
-  final String date_limit;
+  String? nome;
+  String? descricao;
+  String? date_limit;
 
-  ActivityCreate(
-      {required this.nome, required this.descricao, required this.date_limit});
+  ActivityCreate({this.nome, this.descricao, this.date_limit});
 }
 
 class ActivityService {
@@ -53,6 +50,38 @@ class ActivityService {
       }
     } catch (e) {
       print('Erro ao criar Atividade: $e');
+      return null;
+    }
+  }
+
+  Future<String?> updateActivity(Activity activityUpdate) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = await prefs.getString('token');
+
+    var body = {
+      'nome': activityUpdate.nome,
+      'descricao': activityUpdate.descricao,
+      'date_limit': activityUpdate.date_limit
+    };
+
+    try {
+      final response = await http.put(
+          Uri.parse('${Config.baseUrl}/activity/${activityUpdate.id}'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(body));
+
+      if (response.statusCode == 200) {
+        return ('Atividade atualizada com sucesso');
+      } else {
+        print(
+            'Falha ao atualizar Atividade: ${response.statusCode} ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('Erro ao atualizar Atividade: $e');
       return null;
     }
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/services/activity_service.dart';
 import 'package:frontend/activity_registration_screen.dart';
+import 'package:frontend/activity_edit_screen.dart'; // Importe a tela de edição
 
 class ActivityListScreen extends StatefulWidget {
   @override
@@ -55,42 +56,57 @@ class _ActivityListScreenState extends State<ActivityListScreen> {
               itemCount: _activities.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                    title: Text(
-                      _activities[index].nome ?? '',
-                      style: TextStyle(fontSize: 18.0),
-                    ),
-                    subtitle: Row(
-                      children: [
-                        Text(
-                            '${(_activities[index].descricao == null || _activities[index].descricao == '') ? "Tarefa sem descrição" : _activities[index].descricao}\nData de Entrega: ${(_activities[index].date_limit == null || _activities[index].date_limit == '') ? "Tarefa sem data de entrega definido" : _activities[index].date_limit}'),
-                        ElevatedButton(
-                          onPressed: () async {
-                            try {
-                              String? results = await activityService
-                                  .deleteActivity(_activities[index].id == null
-                                      ? 0
-                                      : _activities[index].id);
-                              if (results != null) {
-                                _showDialog(context, results);
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ActivityListScreen(),
-                                  ),
-                                );
-                              } else {
-                                _showDialog(
-                                    context, 'Erro ao excluir atividade');
-                              }
-                            } catch (e) {
-                              _showDialog(
-                                  context, 'Erro ao cadastrar atividade');
+                  title: Text(
+                    _activities[index].nome ?? '',
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                  subtitle: Row(
+                    children: [
+                      Text(
+                        '${(_activities[index].descricao == null || _activities[index].descricao == '') ? "Tarefa sem descrição" : _activities[index].descricao}\nData de Entrega: ${(_activities[index].date_limit == null || _activities[index].date_limit == '') ? "Tarefa sem data de entrega definido" : _activities[index].date_limit}',
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          try {
+                            // Navegue para a tela de edição com os dados da atividade
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ActivityEditScreen(
+                                    activity: _activities[index]),
+                              ),
+                            );
+                          } catch (e) {
+                            _showDialog(context, 'Erro ao editar atividade');
+                          }
+                        },
+                        child: Text('Editar atividade'),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          try {
+                            String? results = await activityService
+                                .deleteActivity(_activities[index].id ?? 0);
+                            if (results != null) {
+                              _showDialog(context, results);
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ActivityListScreen(),
+                                ),
+                              );
+                            } else {
+                              _showDialog(context, 'Erro ao excluir atividade');
                             }
-                          },
-                          child: Text('Excluir atividade'),
-                        ),
-                      ],
-                    ));
+                          } catch (e) {
+                            _showDialog(context, 'Erro ao excluir atividade');
+                          }
+                        },
+                        child: Text('Excluir atividade'),
+                      ),
+                    ],
+                  ),
+                );
               },
             )
           : Center(
